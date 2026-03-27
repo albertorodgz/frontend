@@ -5,10 +5,10 @@
 replicaCount: 1
 
 image:
-  repository: nginx
-  pullPolicy: IfNotPresent
+  repository: webbook
+  pullPolicy: Never
   # Overrides the image tag whose default is the chart appVersion.
-  tag: 1.15.0
+  tag: 0.2
 
 nameOverride: ""
 fullnameOverride: ""
