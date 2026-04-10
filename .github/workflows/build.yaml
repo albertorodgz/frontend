@@ -1,0 +1,41 @@
+name: Build App
+run-name: Build and Modify Helm Chart
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Get current version
+        id: get_version
+        run: |
+          echo "VERSION=$(grep 'appVersion' frontend/helm-chart/Chart.yaml | awk '{print $2}')" >> $GITHUB_ENV
+
+      - name: Set next version
+        id: set_version
+        run: |
+          VERSION=$(echo ${{ env.VERSION }} | awk -F. -v OFS=. '{$NF++;print}')
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+        
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+        
+      - name: Docker build
+        run: |
+          docker build -t webbook:${{ env.VERSION }} .
+
+      - name: Update Helm Chart
+        run: |
+          sed -i "s/tag: .*/tag: ${{ env.VERSION }}/" frontend/helm-chart/values.yaml
+          sed -i "s/appVersion: .*/appVersion: ${{ env.VERSION }}/" frontend/helm-chart/Chart.yaml
+
+      - name: Commit changes
+        run: |
+          git add frontend/helm-chart/values.yaml frontend/helm-chart/Chart.yaml
+          git commit -m "version: ${{ env.VERSION }}"
+          git push origin HEAD:main
