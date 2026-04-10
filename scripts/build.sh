@@ -9,7 +9,7 @@ CURRENT_VERSION=$(grep 'appVersion' helm-chart/Chart.yaml | awk '{print $2}')
 
 # Set next version
 echo "Setting next version..."
-VERSION=$(echo $CURRENT_VERSION | awk -F. '{print ++$NF}')
+VERSION=$(echo $CURRENT_VERSION | awk -F. -v OFS=. '{++$NF;print}')
 
 # Build Docker image
 echo "Building Docker image with version $VERSION..."
