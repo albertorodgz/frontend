@@ -8,7 +8,7 @@ image:
   repository: webbook
   pullPolicy: Never
   # Overrides the image tag whose default is the chart appVersion.
-  tag: 4
+  tag: 5
 
 nameOverride: ""
 fullnameOverride: ""
