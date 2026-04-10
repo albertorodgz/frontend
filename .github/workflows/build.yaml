@@ -14,16 +14,16 @@ jobs:
       - name: Get current version
         id: get_version
         run: |
-          echo "VERSION=$(grep 'appVersion' frontend/helm-chart/Chart.yaml | awk '{print $2}')" >> $GITHUB_ENV
+          echo "CURRENT_VERSION=$(grep 'appVersion' frontend/helm-chart/Chart.yaml | awk '{print $2}')" >> $GITHUB_ENV
 
       - name: Set next version
         id: set_version
         run: |
-          VERSION=$(echo ${{ env.VERSION }} | awk -F. -v OFS=. '{$NF++;print}')
+          VERSION=$(echo ${{ env.CURRENT_VERSION }} | awk -F. -v OFS=. '{$NF++;print}')
           echo "VERSION=$VERSION" >> $GITHUB_ENV
         
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+      - name: Set up Docker
+        uses: docker/setup-docker-action@v5
         
       - name: Docker build
         run: |
